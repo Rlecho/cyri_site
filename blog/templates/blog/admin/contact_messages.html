@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Messages de Contact - Administration{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 5%;">
+    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="color: #1e40af;">Messages de Contact</h1>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            {% if unread_count > 0 %}
+            <span style="background: #dc2626; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">
+                {{ unread_count }} non lu{{ unread_count|pluralize }}
+            </span>
+            {% endif %}
+            <a href="{% url 'admin_dashboard' %}" style="background: #6b7280;color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 4px;margin-left:2cm;">
+                ← Retour
+            </a>
+        </div>
+    </div>
+
+    <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        {% if messages_list %}
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f3f4f6;">
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Expéditeur</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Sujet</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Date</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Statut</th>
+                    <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in messages_list %}
+                <tr style="border-bottom: 1px solid #e5e7eb; {% if not message.is_read %}background: #f0f9ff;{% endif %}">
+                    <td style="padding: 1rem;">
+                        <strong>{{ message.name }}</strong>
+                        <br>
+                        <small style="color: #6b7280;">{{ message.email }}</small>
+                    </td>
+                    <td style="padding: 1rem;">
+                        {{ message.subject|truncatewords:8 }}
+                    </td>
+                    <td style="padding: 1rem;">
+                        {{ message.created_at|date:"d/m/Y H:i" }}
+                    </td>
+                    <td style="padding: 1rem;">
+                        {% if message.is_read %}
+                        <span style="color: #059669;">✓ Lu</span>
+                        {% else %}
+                        <span style="color: #dc2626; font-weight: bold;">● Non lu</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem;">
+                        <a href="{% url 'contact_message_detail' message.id %}" style="color: #1e40af; text-decoration: none; margin-right: 0.5rem;">👁️ Voir</a>
+                        <a href="{% url 'delete_contact_message' message.id %}" style="color: #dc2626; text-decoration: none;">🗑️ Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding: 3rem; text-align: center; color: #6b7280;">
+            <p style="font-size: 1.125rem;">Aucun message de contact pour le moment.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

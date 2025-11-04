@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Supprimer l'article - Administration{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; padding: 2rem 5%; text-align: center;">
+    <h1 style="color: #dc2626; margin-bottom: 1rem;">Confirmer la suppression</h1>
+    
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <p style="font-size: 1.125rem; margin-bottom: 1.5rem;">
+            Êtes-vous sûr de vouloir supprimer l'article <strong>"{{ article.title }}"</strong> ?
+        </p>
+        
+        <p style="color: #6b7280; margin-bottom: 2rem;">
+            ⚠️ Cette action est irréversible. Tous les commentaires et fichiers associés seront également supprimés.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button type="submit" 
+                        style="background-color: #dc2626; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: 500; transition: background-color 0.3s;">
+                    Oui, supprimer définitivement
+                </button>
+                
+                <a href="{% url 'admin_dashboard' %}" 
+                   style="background-color: #6b7280; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none; font-weight: 500; transition: background-color 0.3s;">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    button:hover {
+        background-color: #b91c1c !important;
+    }
+    
+    a:hover {
+        background-color: #4b5563 !important;
+    }
+</style>
+{% endblock %}

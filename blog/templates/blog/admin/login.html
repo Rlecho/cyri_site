@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion - Administration{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 0 auto; padding: 4rem 5%;">
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        <h2 style="text-align: center; color: #1e40af; margin-bottom: 2rem;">
+            Connexion Administrateur
+        </h2>
+
+        {% if form.errors %}
+        <div style="background-color: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+            <strong>Erreur :</strong> Nom d'utilisateur ou mot de passe incorrect.
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+                    Nom d'utilisateur
+                </label>
+                <input type="text" name="username" required 
+                       style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 4px;"
+                       placeholder="Votre nom d'utilisateur">
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+                    Mot de passe
+                </label>
+                <input type="password" name="password" required 
+                       style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 4px;"
+                       placeholder="Votre mot de passe">
+            </div>
+
+            <button type="submit" 
+                    style="width: 100%; background-color: #1e40af; color: white; border: none; padding: 0.75rem; border-radius: 4px; cursor: pointer; font-weight: 500; margin-bottom: 1rem;">
+                Se connecter
+            </button>
+
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+
+        <div style="text-align: center; color: #6b7280; font-size: 0.875rem;">
+            <p>Accès réservé aux administrateurs</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="{% url 'home' %}" style="color: #6b7280; text-decoration: none;">
+            ← Retour au site
+        </a>
+    </div>
+</div>
+
+<style>
+    input:focus {
+        outline: none;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+
+    button:hover {
+        background-color: #1d4ed8;
+    }
+</style>
+{% endblock %}

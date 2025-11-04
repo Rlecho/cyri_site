@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Supprimer le message - Administration{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; padding: 2rem 5%; text-align: center;">
+    <h1 style="color: #dc2626; margin-bottom: 1rem;">Confirmer la suppression</h1>
+    
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <p style="font-size: 1.125rem; margin-bottom: 1.5rem;">
+            Êtes-vous sûr de vouloir supprimer le message de <strong>"{{ message.name }}"</strong> ?
+        </p>
+        
+        <div style="background: #fef2f2; padding: 1rem; border-radius: 4px; margin-bottom: 2rem; text-align: left;">
+            <p style="margin: 0; color: #dc2626;">
+                <strong>Sujet :</strong> {{ message.subject }}<br>
+                <strong>Date :</strong> {{ message.created_at|date:"d/m/Y H:i" }}
+            </p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button type="submit" 
+                        style="background-color: #dc2626; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: 500;">
+                    Oui, supprimer
+                </button>
+                
+                <a href="{% url 'contact_message_detail' message.id %}" 
+                   style="background-color: #6b7280; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none; font-weight: 500;">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

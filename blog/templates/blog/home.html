@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Accueil - Cyriaque.com{% endblock %}
+
+{% block content %}
+<!-- Section Présentation -->
+<section id="presentation" style="padding: 4rem 5%; max-width: 1200px; margin: 2rem auto; background-color: #f3f4f6; border-radius: 10px;">
+    <h2 style="text-align: center; margin-bottom: 3rem; color: #1e40af; position: relative;">
+        À propos de moi
+        <span style="content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background-color: #dc2626;"></span>
+    </h2>
+    <div style="display: flex; align-items: center; gap: 3rem;">
+        <div style="flex: 1;">
+            <h3 style="margin-bottom: 1rem;">Bonjour, je suis [Cyriaque.com]</h3>
+            <p style="margin-bottom: 1rem;">Je suis [votre profession] passionné(e) par [vos domaines d'intérêt]. Avec [nombre] années d'expérience, j'ai travaillé sur divers projets dans [vos domaines d'expertise].</p>
+            <p style="margin-bottom: 1rem;">Mon objectif est de [votre mission ou objectif]. À travers ce site, je partage mes connaissances, mes créations et mes réflexions avec vous.</p>
+            <p>N'hésitez pas à parcourir mes articles et produits, et à me laisser vos commentaires !</p>
+        </div>
+        <div style="flex: 1; text-align: center;">
+            <img src="{% static 'images/r.jpg' %}" alt="Votre photo" style="max-width: 60%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);">
+        </div>
+    </div>
+</section>
+
+<!-- Derniers Articles -->
+<section style="padding: 4rem 5%; max-width: 1200px; margin: 0 auto;">
+    <h2 style="text-align: center; margin-bottom: 3rem; color: #1e40af; position: relative;">
+        Mes Derniers Articles
+        <span style="content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background-color: #dc2626;"></span>
+    </h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        {% for article in articles %}
+        <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s;">
+            {% if article.image %}
+            <img src="{{ article.image.url }}" alt="{{ article.title }}" style="width: 100%; height: 200px; object-fit: cover;">
+            {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Image placeholder" style="width: 100%; height: 200px; object-fit: cover;">
+            {% endif %}
+            <div style="padding: 1.5rem;">
+                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #1e40af;">{{ article.title }}</h3>
+                <div style="display: flex; justify-content: space-between; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                    <span>{{ article.created_at|date:"d/m/Y" }}</span>
+                    <span>{{ article.comments.count }} commentaire{{ article.comments.count|pluralize }}</span>
+                </div>
+                <p style="color: #1f2937; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ article.excerpt }}
+                </p>
+                <a href="{% url 'article_detail' article.slug %}" style="display: inline-block; background-color: #1e40af; color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; font-weight: 500; transition: background-color 0.3s;">
+                    Lire la suite
+                </a>
+                {% if article.file %}
+                <a href="{% url 'download_file' article.id %}" style="display: inline-block; background-color: #dc2626; color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; font-weight: 500; transition: background-color 0.3s; margin-left: 0.5rem;">
+                    Télécharger
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="{% url 'article_list' %}" style="display: inline-block; background-color: #1e40af; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none; font-weight: 500; transition: background-color 0.3s;">
+            Voir tous les articles
+        </a>
+    </div>
+</section>
+{% endblock %}

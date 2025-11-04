@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact - Votre Nom{% endblock %}
+
+{% block content %}
+<section style="padding: 4rem 5%; max-width: 800px; margin: 0 auto;">
+    <h2 style="text-align: center; margin-bottom: 3rem; color: #1e40af; position: relative;">
+        Me Contacter
+        <span style="content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background-color: #dc2626;"></span>
+    </h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+        <!-- Informations de contact -->
+        <div>
+            <h3 style="color: #1e40af; margin-bottom: 1.5rem;">Coordonnées</h3>
+            
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #1e40af;">
+                <div style="margin-bottom: 1rem;">
+                    <strong>Email :</strong>
+                    <p style="margin: 0.25rem 0; color: #6b7280;">elechoserge@gmail.com</p>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <strong>Téléphone :</strong>
+                    <p style="margin: 0.25rem 0; color: #6b7280;">+229 0153300324</p>
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <strong>Localisation :</strong>
+                    <p style="margin: 0.25rem 0; color: #6b7280;">Abomey-Calavi, Bénin</p>
+                </div>
+                
+                <div>
+                    <strong>Disponibilité :</strong>
+                    <p style="margin: 0.25rem 0; color: #6b7280;">Lun - Ven: 9h - 18h</p>
+                </div>
+            </div>
+
+            <!-- Réseaux sociaux -->
+            <div style="margin-top: 2rem;">
+                <h4 style="color: #1e40af; margin-bottom: 1rem;">Réseaux sociaux</h4>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="#" style="display: inline-block; padding: 0.5rem 1rem; background: #1e40af; color: white; text-decoration: none; border-radius: 4px; font-size: 0.875rem;">
+                        LinkedIn
+                    </a>
+                    <a href="#" style="display: inline-block; padding: 0.5rem 1rem; background: #1da1f2; color: white; text-decoration: none; border-radius: 4px; font-size: 0.875rem;">
+                        Twitter
+                    </a>
+                    <a href="#" style="display: inline-block; padding: 0.5rem 1rem; background: #333; color: white; text-decoration: none; border-radius: 4px; font-size: 0.875rem;">
+                        GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire de contact -->
+        <div>
+            <h3 style="color: #1e40af; margin-bottom: 1.5rem;">Envoyer un message</h3>
+            
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">
+                            Votre nom *
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                            {{ form.name.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">
+                            Votre email *
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                            {{ form.email.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">
+                            Sujet *
+                        </label>
+                        {{ form.subject }}
+                        {% if form.subject.errors %}
+                        <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                            {{ form.subject.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">
+                            Votre message *
+                        </label>
+                        {{ form.message }}
+                        {% if form.message.errors %}
+                        <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                            {{ form.message.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" 
+                            style="width: 100%; background-color: #1e40af; color: white; border: none; padding: 0.75rem; border-radius: 4px; cursor: pointer; font-weight: 500; transition: background-color 0.3s;">
+                        Envoyer le message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    input, textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus, textarea:focus {
+        outline: none;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+
+    button:hover {
+        background-color: #1d4ed8;
+    }
+
+    .social-link:hover {
+        transform: translateY(-2px);
+        transition: transform 0.3s;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if article %}Modifier{% else %}Créer{% endif %} un Article - Administration{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; padding: 2rem 5%;">
+    <h1 style="color: #1e40af; margin-bottom: 2rem;">
+        {% if article %}Modifier l'article{% else %}Créer un nouvel article{% endif %}
+    </h1>
+
+    <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Titre *</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                    {{ form.title.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Slug *</label>
+                {{ form.slug }}
+                <small style="color: #6b7280; font-size: 0.875rem;">
+                    Version URL-friendly du titre (lettres minuscules, tirets, pas d'espaces)
+                </small>
+                {% if form.slug.errors %}
+                <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                    {{ form.slug.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Extrait *</label>
+                {{ form.excerpt }}
+                <small style="color: #6b7280; font-size: 0.875rem;">
+                    Brève description qui apparaîtra dans la liste des articles
+                </small>
+                {% if form.excerpt.errors %}
+                <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                    {{ form.excerpt.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Contenu *</label>
+                {{ form.content }}
+                {% if form.content.errors %}
+                <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                    {{ form.content.errors }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Image</label>
+                    {{ form.image }}
+                    {% if article and article.image %}
+                    <div style="margin-top: 0.5rem;">
+                        <img src="{{ article.image.url }}" alt="Image actuelle" style="max-width: 100px; border-radius: 4px;">
+                    </div>
+                    {% endif %}
+                    {% if form.image.errors %}
+                    <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                        {{ form.image.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Fichier à télécharger</label>
+                    {{ form.file }}
+                    {% if article and article.file %}
+                    <div style="margin-top: 0.5rem;">
+                        <span style="color: #059669;">Fichier actuel : {{ article.file.name }}</span>
+                    </div>
+                    {% endif %}
+                    {% if form.file.errors %}
+                    <div style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                        {{ form.file.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                    {{ form.is_published }}
+                    <span style="font-weight: 500;">Publier l'article</span>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" style="background-color: #1e40af; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: 500;">
+                    {% if article %}Mettre à jour{% else %}Créer l'article{% endif %}
+                </button>
+                
+                <a href="{% url 'admin_dashboard' %}" style="background-color: #6b7280; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none; font-weight: 500;">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    input, textarea, select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    input:focus, textarea:focus, select:focus {
+        outline: none;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+</style>
+
+<script>
+    // Génération automatique du slug à partir du titre
+    document.getElementById('id_title').addEventListener('input', function() {
+        const title = this.value;
+        const slug = title
+            .toLowerCase()
+            .replace(/[^a-z0-9 -]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+        
+        document.getElementById('id_slug').value = slug;
+    });
+</script>
+{% endblock %}

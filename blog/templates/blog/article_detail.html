@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} - Cyriaque.com{% endblock %}
+
+{% block content %}
+<article style="max-width: 800px; margin: 0 auto; padding: 2rem 5%;">
+    <header style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="color: #1e40af; margin-bottom: 1rem;">{{ article.title }}</h1>
+        <div style="color: #9ca3af; font-size: 0.875rem;">
+            Publié le {{ article.created_at|date:"d/m/Y" }}
+        </div>
+    </header>
+
+    {% if article.image %}
+    <div style="margin-bottom: 2rem;">
+        <img src="{{ article.image.url }}" alt="{{ article.title }}" style="width: 100%; border-radius: 8px;">
+    </div>
+    {% endif %}
+
+    <div style="line-height: 1.8; margin-bottom: 2rem;">
+        {{ article.content|linebreaks }}
+    </div>
+
+    {% if article.file %}
+    <div style="text-align: center; margin: 2rem 0;">
+        <a href="{% url 'download_file' article.id %}" style="display: inline-block; background-color: #1e40af; color: white; padding: 1rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 1.1rem;">
+            📥 Télécharger le fichier ({{ article.get_download_count }} téléchargements)
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Section Commentaires -->
+    <section style="margin-top: 4rem;">
+        <h2 style="color: #1e40af; margin-bottom: 2rem; border-bottom: 2px solid #f3f4f6; padding-bottom: 0.5rem;">
+            Commentaires ({{ comments.count }})
+        </h2>
+
+        <!-- Liste des commentaires -->
+        {% for comment in comments %}
+        <div style="background-color: #f3f4f6; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <strong style="color: #1e40af;">{{ comment.author_name }}</strong>
+                <span style="color: #9ca3af; font-size: 0.875rem;">{{ comment.created_at|date:"d/m/Y à H:i" }}</span>
+            </div>
+            <p style="margin-bottom: 1rem;">{{ comment.content }}</p>
+
+            <!-- Réponses aux commentaires -->
+            {% for reply in comment.replies.all %}
+            <div style="background-color: rgba(30, 64, 175, 0.1); margin-top: 1rem; padding: 1rem; border-radius: 8px; border-left: 3px solid #1e40af;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <strong style="color: #1e40af;">{{ reply.author_name }}</strong>
+                    <span style="color: #9ca3af; font-size: 0.875rem;">{{ reply.created_at|date:"d/m/Y à H:i" }}</span>
+                </div>
+                <p>{{ reply.content }}</p>
+            </div>
+            {% endfor %}
+
+            <!-- Formulaire de réponse (admin seulement) -->
+            {% if user.is_authenticated %}
+            <button onclick="toggleReplyForm({{ comment.id }})" style="background-color: #1e40af; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-top: 1rem;">
+                Répondre
+            </button>
+            
+            <form id="reply-form-{{ comment.id }}" method="POST" action="{% url 'add_reply' comment.id %}" style="display: none; margin-top: 1rem;">
+                {% csrf_token %}
+                <div>
+                    <textarea name="content" rows="3" placeholder="Votre réponse..." style="width: 100%; padding: 0.75rem; border: 1px solid #9ca3af; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+                <button type="submit" style="background-color: #1e40af; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-top: 0.5rem;">
+                    Publier la réponse
+                </button>
+            </form>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p style="text-align: center; color: #9ca3af;">Aucun commentaire pour le moment.</p>
+        {% endfor %}
+
+        <!-- Formulaire d'ajout de commentaire -->
+        <div style="background-color: #f3f4f6; padding: 2rem; border-radius: 8px; margin-top: 2rem;">
+            <h3 style="color: #1e40af; margin-bottom: 1rem;">Laisser un commentaire</h3>
+            <form method="POST" action="{% url 'add_comment' article.id %}">
+                {% csrf_token %}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Nom</label>
+                        <input type="text" name="author_name" required style="width: 100%; padding: 0.75rem; border: 1px solid #9ca3af; border-radius: 4px;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email</label>
+                        <input type="email" name="author_email" required style="width: 100%; padding: 0.75rem; border: 1px solid #9ca3af; border-radius: 4px;">
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Commentaire</label>
+                    <textarea name="content" rows="5" required style="width: 100%; padding: 0.75rem; border: 1px solid #9ca3af; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+                <button type="submit" style="background-color: #1e40af; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: 500;">
+                    Publier le commentaire
+                </button>
+            </form>
+        </div>
+    </section>
+</article>
+
+<script>
+    function toggleReplyForm(commentId) {
+        const form = document.getElementById('reply-form-' + commentId);
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+{% endblock %}

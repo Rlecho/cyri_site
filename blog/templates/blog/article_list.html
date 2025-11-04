@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Articles - Votre Nom{% endblock %}
+
+{% block content %}
+<section style="padding: 4rem 5%; max-width: 1200px; margin: 0 auto;">
+    <h2 style="text-align: center; margin-bottom: 3rem; color: #1e40af; position: relative;">
+        Tous mes Articles
+        <span style="content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background-color: #dc2626;"></span>
+    </h2>
+
+    <!-- Barre de recherche (optionnelle) -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <form method="GET" action="." style="display: inline-block;">
+            <input type="text" name="q" placeholder="Rechercher un article..." 
+                   style="padding: 0.75rem; border: 1px solid #9ca3af; border-radius: 4px; width: 300px;"
+                   value="{{ request.GET.q }}">
+            <button type="submit" style="background-color: #1e40af; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;">
+                Rechercher
+            </button>
+        </form>
+    </div>
+
+    <!-- Grille des articles -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem;">
+        {% for article in articles %}
+        <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s;">
+            {% if article.image %}
+            <img src="{{ article.image.url }}" alt="{{ article.title }}" style="width: 100%; height: 200px; object-fit: cover;">
+            {% else %}
+            <img src="{% static 'images/placeholder.jpg' %}" alt="Image placeholder" style="width: 100%; height: 200px; object-fit: cover; background-color: #f3f4f6;">
+            {% endif %}
+            
+            <div style="padding: 1.5rem;">
+                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #1e40af;">
+                    <a href="{% url 'article_detail' article.slug %}" style="text-decoration: none; color: inherit;">
+                        {{ article.title }}
+                    </a>
+                </h3>
+                
+                <div style="display: flex; justify-content: space-between; color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                    <span>{{ article.created_at|date:"d/m/Y" }}</span>
+                    <span>{{ article.comments.count }} commentaire{{ article.comments.count|pluralize }}</span>
+                </div>
+                
+                <p style="color: #1f2937; margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ article.excerpt }}
+                </p>
+                
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <a href="{% url 'article_detail' article.slug %}" style="display: inline-block; background-color: #1e40af; color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; font-weight: 500; transition: background-color 0.3s;">
+                        Lire la suite
+                    </a>
+                    
+                    {% if article.file %}
+                    <a href="{% url 'download_file' article.id %}" style="display: inline-block; background-color: #dc2626; color: white; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; font-weight: 500; transition: background-color 0.3s;">
+                        📥 Télécharger
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background-color: #f3f4f6; border-radius: 8px;">
+            <h3 style="color: #6b7280; margin-bottom: 1rem;">Aucun article trouvé</h3>
+            <p style="color: #9ca3af;">Aucun article n'est disponible pour le moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: 3rem; gap: 1rem;">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" style="padding: 0.5rem 1rem; background-color: #1e40af; color: white; text-decoration: none; border-radius: 4px;">
+                &laquo; Premier
+            </a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" style="padding: 0.5rem 1rem; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 4px;">
+                Précédent
+            </a>
+        {% endif %}
+
+        <span style="color: #6b7280;">
+            Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" style="padding: 0.5rem 1rem; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 4px;">
+                Suivant
+            </a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" style="padding: 0.5rem 1rem; background-color: #1e40af; color: white; text-decoration: none; border-radius: 4px;">
+                Dernier &raquo;
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Lien vers l'accueil -->
+    <div style="text-align: center; margin-top: 3rem;">
+        <a href="{% url 'home' %}" style="display: inline-block; background-color: #6b7280; color: white; padding: 0.75rem 1.5rem; border-radius: 4px; text-decoration: none; font-weight: 500; transition: background-color 0.3s;">
+            ← Retour à l'accueil
+        </a>
+    </div>
+</section>
+
+<style>
+    .article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .download-btn:hover {
+        background-color: #b91c1c;
+    }
+
+    .read-btn:hover {
+        background-color: #1d4ed8;
+    }
+</style>
+
+<script>
+    // Animation au survol des cartes
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.article-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+            });
+        });
+    });
+</script>
+{% endblock %}

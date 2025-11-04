@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Administration - Cyriaque.com{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 2rem 5%;">
+    <h1 style="color: #1e40af; margin-bottom: 2rem;">Tableau de Bord Administrateur</h1>
+
+
+
+
+
+
+<!-- Dans la section des statistiques -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+        <h3 style="color: #1e40af;">{{ articles.count }}</h3>
+        <p>Articles</p>
+    </div>
+    <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+        <h3 style="color: #dc2626;">{{ pending_comments.count }}</h3>
+        <p>Commentaires en attente</p>
+    </div>
+    <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+       
+            <a href="{% url 'contact_messages' %}" style="background: #000000; color: rgb(238, 5, 5);  text-decoration: none; border-radius: 4px;">
+                <h3 style="color: #059669;">{{ contact_messages_count }}</h3>
+                <p>Messages de contact</p>
+            </a>
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+        <!-- Articles -->
+        <div>
+            <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: #1e40af;">Articles</h2>
+                <a href="{% url 'admin_article_create' %}" style="background: #1e40af; color: white; margin-left: 1cm; padding: 0.5rem 1rem; text-decoration: none; border-radius: 4px;">
+                    Nouvel Article
+                </a>
+            </div>
+
+            <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f3f4f6;">
+                            <th style="padding: 1rem; text-align: left;">Titre</th>
+                            <th style="padding: 1rem; text-align: left;">Date</th>
+                            <th style="padding: 1rem; text-align: left;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for article in articles %}
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 1rem;">{{ article.title }}</td>
+                            <td style="padding: 1rem;">{{ article.created_at|date:"d/m/Y" }}</td>
+                            <td style="padding: 1rem;">
+                                <a href="{% url 'admin_article_edit' article.id %}" style="color: #1e40af; text-decoration: none; margin-right: 0.5rem;">Modifier</a>
+                                <a href="{% url 'admin_article_delete' article.id %}" style="color: #dc2626; text-decoration: none;">Supprimer</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Commentaires en attente -->
+        <div>
+            <h2 style="color: #1e40af; margin-bottom: 1rem;">Commentaires en attente</h2>
+            <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                {% for comment in pending_comments %}
+                <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">
+                    <div style="font-weight: bold; color: #1e40af;">{{ comment.author_name }}</div>
+                    <div style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">
+                        sur "{{ comment.article.title }}"
+                    </div>
+                    <p style="margin-bottom: 0.5rem;">{{ comment.content|truncatewords:20 }}</p>
+                    <div>
+                        <a href="{% url 'approve_comment' comment.id %}" style="color: #059669; text-decoration: none; margin-right: 0.5rem;">Approuver</a>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="padding: 2rem; text-align: center; color: #9ca3af;">
+                    Aucun commentaire en attente
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
