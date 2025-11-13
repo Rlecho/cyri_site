@@ -8,7 +8,7 @@ SECRET_KEY = 'django-insecure-tdnm0-_k__v$&72+uuf46!z)h)cmlrgg&wmj$_^g6ck(@5yu=!
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['elechoserge.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,20 +57,9 @@ WSGI_APPLICATION = 'cyri_site.wsgi.application'
 #     }
 # }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cyri_site_db',
-        'USER': 'postgres',
-        'PASSWORD': 'Serge@@123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'CONN_MAX_AGE': 600,
-        'OPTIONS': {
-            'client_encoding': 'UTF8'
-        },
-        'TEST': {
-            'NAME': 'test_cyri_site_db',
-        }
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -95,7 +84,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+#STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
